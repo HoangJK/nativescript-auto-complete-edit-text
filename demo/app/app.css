@@ -1,0 +1,5 @@
+﻿@import '~nativescript-theme-core/css/core.light.css';
+.tv-message {
+    hashtag-color: #8B76B7;
+    mention-color: #8B76B7;
+}

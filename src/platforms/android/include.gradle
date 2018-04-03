@@ -1,0 +1,14 @@
+/* Include.gradle configuration: http://docs.nativescript.org/plugins/plugins#includegradle-specification */
+
+android {
+	productFlavors {
+        "nativescriptautocompletetextfield" {
+            dimension "nativescriptautocompletetextfield"
+        }
+    }
+}
+
+dependencies {
+    compile 'com.hendraanggrian:socialview-core:0.17'
+    compile 'com.hendraanggrian:socialview-commons:0.17'
+}
