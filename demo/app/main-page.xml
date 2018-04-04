@@ -1,6 +1,6 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded" class="page"
-  xmlns:JK="nativescript-auto-complete-text-field">
+  xmlns:JK="nativescript-auto-complete-edit-text">
   <StackLayout horizontalAlignment="left">
-    <JK:AutoCompleteTextView text="JK123" hint="Enter your name" class="tv-message" />
+    <JK:AutoCompleteEditText width="100%" text="JK123" hint="Enter your name" class="tv-message" />
   </StackLayout>
 </Page>
