@@ -1,13 +1,13 @@
 {
-    "name": "nativescript-auto-complete-text-field",
+    "name": "nativescript-auto-complete-edit-text",
     "version": "1.0.0",
     "description": "Your awesome NativeScript plugin.",
-    "main": "auto-complete-text-field",
+    "main": "auto-complete-edit-text",
     "typings": "index.d.ts",
     "nativescript": {
         "platforms": {
-            "android": "3.0.0",
-            "ios": "3.0.0"
+            "android": "3.4.0",
+            "ios": "3.4.0"
         }
     },
     "scripts": {
@@ -34,14 +34,14 @@
         "iOS"
     ],
     "author": {
-        "name": "Your Name",
-        "email": "youremail@yourdomain.com"
+        "name": "JK",
+        "email": "lexuanhoang2506@gmail.com"
     },
     "bugs": {
-        "url": "https://github.com/JK/nativescript-auto-complete-text-field/issues"
+        "url": "https://github.com/HoangJK/nativescript-auto-complete-edit-text/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/JK/nativescript-auto-complete-text-field",
+    "homepage": "https://github.com/HoangJK/nativescript-auto-complete-edit-text",
     "readmeFilename": "README.md",
     "devDependencies": {
         "tns-core-modules": "^3.1.0",

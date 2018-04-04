@@ -1,4 +1,4 @@
-import { Common, hashtagColorProperty, hashtagColorCssProperty, mentionColorProperty, mentionColorCssProperty } from './auto-complete-text-field.common';
+import { Common, hashtagColorProperty, hashtagColorCssProperty, mentionColorProperty, mentionColorCssProperty } from './auto-complete-edit-text.common';
 import { View, Property } from "tns-core-modules/ui/core/view";
 import * as utils from "tns-core-modules/utils/utils";
 import app = require("tns-core-modules/application");
@@ -15,7 +15,7 @@ export declare namespace com {
     }
 }
 
-export class AutoCompleteTextView extends Common {
+export class AutoCompleteEditText extends Common {
 
     public [hashtagColorProperty.setNative](value: Color) {
         console.log("hashtagColorProperty.setNative");
