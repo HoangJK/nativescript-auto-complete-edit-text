@@ -1,6 +1,6 @@
-import { Common } from './auto-complete-text-field.common';
-export declare class AutoCompleteTextField extends Common {
-  // define your typings manually
-  // or..
-  // take the ios or android .d.ts files and copy/paste them here
+import { Common } from './auto-complete-edit-text.common';
+export declare class AutoCompleteEditText extends Common {
+    // define your typings manually
+    // or..
+    // take the ios or android .d.ts files and copy/paste them here
 }
