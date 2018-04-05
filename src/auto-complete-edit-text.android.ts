@@ -40,11 +40,32 @@ export class AutoCompleteEditText extends Common {
     public createNativeView() {
         var editText: any = super.createNativeView();
         const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(this._context);
+        this._configureEditText(socialAutoCompleteTextView);
         var listener = editText.listener;
         (<any>socialAutoCompleteTextView).addTextChangedListener(listener);
         (<any>socialAutoCompleteTextView).setOnFocusChangeListener(listener);
         (<any>socialAutoCompleteTextView).setOnEditorActionListener(listener);
+        (<any>socialAutoCompleteTextView).setOnTouchListener(new android.view.View.OnTouchListener({
+            onTouch: function (view: any, event: any) {
+                if (view && view.getParent && view.getParent()) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & android.view.MotionEvent.ACTION_MASK) {
+                        case android.view.MotionEvent.ACTION_UP:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        }));
         (<any>socialAutoCompleteTextView).listener = listener;
         return socialAutoCompleteTextView;
+    }
+
+    private _configureEditText(socialAutoCompleteTextView: any) {
+        socialAutoCompleteTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_NORMAL | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE | android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        socialAutoCompleteTextView.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
     }
 }

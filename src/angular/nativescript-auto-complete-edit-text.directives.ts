@@ -24,7 +24,12 @@ export class AutoCompleteEditTextDirective extends CustomNgModel {
     }
 
     ngOnInit() {
+        var self = this;
         this.element.nativeElement.text = this.ngModel;
+        this.element.nativeElement.on("textChanged", function (args) {
+            console.log("textChanged: ", self.element.nativeElement.text);
+            self.value = self.element.nativeElement.text;
+        });
     }
 
 }
