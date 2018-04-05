@@ -6,6 +6,7 @@ import { Color } from "tns-core-modules/color";
 
 export class Common extends TextView {
     public hashtagColor;
+    public mentionColor;
 }
 
 

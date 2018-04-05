@@ -40,7 +40,11 @@ export class AutoCompleteEditText extends Common {
     public createNativeView() {
         var editText: any = super.createNativeView();
         const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(this._context);
-        (<any>socialAutoCompleteTextView).listener = editText.listener;
+        var listener = editText.listener;
+        (<any>socialAutoCompleteTextView).addTextChangedListener(listener);
+        (<any>socialAutoCompleteTextView).setOnFocusChangeListener(listener);
+        (<any>socialAutoCompleteTextView).setOnEditorActionListener(listener);
+        (<any>socialAutoCompleteTextView).listener = listener;
         return socialAutoCompleteTextView;
     }
 }
