@@ -38,13 +38,9 @@ export class AutoCompleteEditText extends Common {
     }
 
     public createNativeView() {
-        const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(app.android.startActivity);
+        var editText: any = super.createNativeView();
+        const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(this._context);
+        (<any>socialAutoCompleteTextView).listener = editText.listener;
         return socialAutoCompleteTextView;
-    }
-
-    public initNativeView(): void {
-        this.nativeViewProtected.listener = {};
-        super.initNativeView();
-
     }
 }
