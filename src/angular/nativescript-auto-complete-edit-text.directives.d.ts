@@ -1,9 +1,14 @@
-import { ElementRef, OnInit } from "@angular/core";
-import { CustomNgModel } from "./custom-ng-model";
-export declare class AutoCompleteEditTextDirective extends CustomNgModel implements OnInit {
-    element: ElementRef;
-    ngModel: string;
-    constructor(element: ElementRef);
-    ngOnInit(): void;
+import { ElementRef, AfterViewInit } from "@angular/core";
+import { BaseValueAccessor } from "nativescript-angular";
+import { AutoCompleteEditText } from "../";
+export declare class AutoCompleteEditTextDirective extends BaseValueAccessor<AutoCompleteEditText> implements AfterViewInit {
+    elementRef: ElementRef;
+    private _normalizedValue;
+    private viewInitialized;
+    constructor(elementRef: ElementRef);
+    textChangedListener(event: any): void;
+    onTouched: () => void;
+    writeValue(value: any): void;
+    ngAfterViewInit(): void;
+    registerOnTouched(fn: () => void): void;
 }
-export declare const DIRECTIVES: typeof AutoCompleteEditTextDirective[];

@@ -1,13 +1,15 @@
 import { NgModule } from "@angular/core";
 import { registerElement } from "nativescript-angular/element-registry";
-import { DIRECTIVES } from "./nativescript-auto-complete-edit-text.directives";
+import { AutoCompleteEditTextDirective } from "./nativescript-auto-complete-edit-text.directives";
+import { FormsModule } from "@angular/forms";
+
+registerElement("AutoCompleteEditText", () => require("../").AutoCompleteEditText);
 
 @NgModule({
-    declarations: [DIRECTIVES],
-    exports: [DIRECTIVES]
+    declarations: [AutoCompleteEditTextDirective],
+    imports: [FormsModule],
+    exports: [FormsModule, AutoCompleteEditTextDirective]
 })
 export class NativeScriptUIAutoCompleteEditTextModule {
 
 }
-
-registerElement("AutoCompleteEditText", () => require("../").AutoCompleteEditText)
