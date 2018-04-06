@@ -1,4 +1,4 @@
-import { Directive, Input, forwardRef, ElementRef } from "@angular/core";
+import { Directive, Input, forwardRef, ElementRef, OnInit } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { CustomNgModel } from "./custom-ng-model";
 
@@ -14,8 +14,8 @@ const noop = () => {
         multi: true
     }],
 })
-export class AutoCompleteEditTextDirective extends CustomNgModel {
-    @Input() ngModel: any;
+export class AutoCompleteEditTextDirective extends CustomNgModel implements OnInit {
+    @Input() ngModel: string;
 
     constructor(
         public element: ElementRef
@@ -26,8 +26,7 @@ export class AutoCompleteEditTextDirective extends CustomNgModel {
     ngOnInit() {
         var self = this;
         this.element.nativeElement.text = this.ngModel;
-        this.element.nativeElement.on("textChanged", function (args) {
-            console.log("textChanged: ", self.element.nativeElement.text);
+        this.element.nativeElement.on("textChange", function (args) {
             self.value = self.element.nativeElement.text;
         });
     }
