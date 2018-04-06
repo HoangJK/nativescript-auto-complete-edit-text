@@ -13,11 +13,8 @@ export class AppComponent {
 
     }
 
-    onShowTextClick() {
-        console.log("onShowTextClick: ", this.contentMessage);
+    onTextChanged(args) {
+
     }
 
-    onTextChanged(args) {
-        console.log("onTextChanged: ", args.object.text);
-    }
 }
