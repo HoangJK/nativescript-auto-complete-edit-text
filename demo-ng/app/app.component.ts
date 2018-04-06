@@ -5,4 +5,19 @@ import { Component } from "@angular/core";
     templateUrl: "app.component.html",
 })
 
-export class AppComponent { }
+export class AppComponent {
+    public contentMessage = "JK"
+
+    ngOnInit() {
+        var self = this;
+
+    }
+
+    onShowTextClick() {
+        console.log("onShowTextClick: ", this.contentMessage);
+    }
+
+    onTextChanged(args) {
+        console.log("onTextChanged: ", args.object.text);
+    }
+}

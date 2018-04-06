@@ -1,2 +1,9 @@
 <!-- https://docs.nativescript.org/angular/core-concepts/angular-navigation.html#page-router-outlet -->
-<page-router-outlet></page-router-outlet>
+<!--<page-router-outlet></page-router-outlet>-->
+<ScrollView>
+    <StackLayout backgroundColor="#ccc">
+        <Label [text]="contentMessage" textWrap="true"></Label>
+        <AutoCompleteEditText [(ngModel)]="contentMessage" editable="true" hashtagColor="#FF0000" mentionColor="#00FF00" height="100"></AutoCompleteEditText>
+        <Button text="Show Text" (tap)="onShowTextClick($event)"></Button>
+    </StackLayout>
+</ScrollView>

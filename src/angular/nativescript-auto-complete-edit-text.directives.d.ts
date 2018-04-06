@@ -1,8 +1,8 @@
-import { ElementRef } from "@angular/core";
+import { ElementRef, OnInit } from "@angular/core";
 import { CustomNgModel } from "./custom-ng-model";
-export declare class AutoCompleteEditTextDirective extends CustomNgModel {
+export declare class AutoCompleteEditTextDirective extends CustomNgModel implements OnInit {
     element: ElementRef;
-    ngModel: any;
+    ngModel: string;
     constructor(element: ElementRef);
     ngOnInit(): void;
 }

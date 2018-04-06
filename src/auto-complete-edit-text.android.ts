@@ -18,22 +18,18 @@ export declare namespace com {
 export class AutoCompleteEditText extends Common {
 
     public [hashtagColorProperty.setNative](value: Color) {
-        console.log("hashtagColorProperty.setNative");
         this.nativeView.setHashtagColor(value.android);
     }
 
     public [hashtagColorCssProperty.setNative](value: Color) {
-        console.log("hashtagColorCssProperty.setNative");
         this.nativeView.setHashtagColor(value.android);
     }
 
     public [mentionColorProperty.setNative](value: Color) {
-        console.log("mentionColorProperty.setNative");
         this.nativeView.setMentionColor(value.android);
     }
 
     public [mentionColorCssProperty.setNative](value: Color) {
-        console.log("mentionColorCssProperty.setNative");
         this.nativeView.setMentionColor(value.android);
     }
 
