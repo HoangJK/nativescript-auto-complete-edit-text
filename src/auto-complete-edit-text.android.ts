@@ -1,4 +1,11 @@
-import { Common, hashtagColorProperty, hashtagColorCssProperty, mentionColorProperty, mentionColorCssProperty } from './auto-complete-edit-text.common';
+import {
+    Common,
+    hashtagColorProperty,
+    hashtagColorCssProperty,
+    mentionColorProperty,
+    mentionColorCssProperty,
+    mentionItemsProperty
+} from "./auto-complete-edit-text.common";
 import { View, Property } from "tns-core-modules/ui/core/view";
 import * as utils from "tns-core-modules/utils/utils";
 import app = require("tns-core-modules/application");
@@ -9,30 +16,31 @@ export declare namespace com {
     module hendraanggrian {
         module widget {
             class SocialAutoCompleteTextView {
-                public constructor(context);
+                constructor(context);
+            }
+            class SocialAdapter {
+
+            }
+            class MentionAdapter extends android.widget.ArrayAdapter<any> {
+                constructor(context: any);
+            }
+        }
+        module socialview {
+            class Mention {
+                constructor(username?: string);
+                constructor(username?: string, displayName?: string);
+                constructor(username?: string, displayName?: string, avatar?: any);
             }
         }
     }
 }
 
+let MentionAdapter = com.hendraanggrian.widget.MentionAdapter;
+let Mention = com.hendraanggrian.socialview.Mention;
+
 export class AutoCompleteEditText extends Common {
 
-    public [hashtagColorProperty.setNative](value: Color) {
-        this.nativeView.setHashtagColor(value.android);
-    }
-
-    public [hashtagColorCssProperty.setNative](value: Color) {
-        this.nativeView.setHashtagColor(value.android);
-    }
-
-    public [mentionColorProperty.setNative](value: Color) {
-        this.nativeView.setMentionColor(value.android);
-    }
-
-    public [mentionColorCssProperty.setNative](value: Color) {
-        this.nativeView.setMentionColor(value.android);
-    }
-
+    //Override
     public createNativeView() {
         var editText: any = super.createNativeView();
         const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(this._context);
@@ -60,8 +68,33 @@ export class AutoCompleteEditText extends Common {
         return socialAutoCompleteTextView;
     }
 
+    //Override
     private _configureEditText(socialAutoCompleteTextView: any) {
         socialAutoCompleteTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_NORMAL | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE | android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         socialAutoCompleteTextView.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
+    }
+
+    public [hashtagColorProperty.setNative](value: Color) {
+        this.nativeView.setHashtagColor(value.android);
+    }
+
+    public [hashtagColorCssProperty.setNative](value: Color) {
+        this.nativeView.setHashtagColor(value.android);
+    }
+
+    public [mentionColorProperty.setNative](value: Color) {
+        this.nativeView.setMentionColor(value.android);
+    }
+
+    public [mentionColorCssProperty.setNative](value: Color) {
+        this.nativeView.setMentionColor(value.android);
+    }
+
+    public [mentionItemsProperty.setNative](mentionItems: Array<any>) {
+        let mentionAdapter = new MentionAdapter(utils.ad.getApplicationContext());
+        mentionItems.forEach((item: any) => {
+            mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
+        });
+        this.nativeView.setMentionAdapter(mentionAdapter);
     }
 }

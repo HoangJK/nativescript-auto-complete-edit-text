@@ -35,3 +35,9 @@ export const mentionColorCssProperty = new CssProperty<Style, Color>({
     valueConverter: (v) => new Color(v)
 });
 mentionColorCssProperty.register(Style);
+
+export const mentionItemsProperty = new Property<Common, Array<any>>({
+    name: "mentionItems",
+    valueChanged: (v) => v
+});
+mentionItemsProperty.register(Common);
