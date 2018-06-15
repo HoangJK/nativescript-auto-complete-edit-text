@@ -18,6 +18,9 @@ export declare namespace com {
             class SocialAutoCompleteTextView {
                 constructor(context);
             }
+            class SocialView {
+
+            }
             class SocialAdapter {
 
             }
@@ -34,6 +37,19 @@ export declare namespace com {
         }
     }
 }
+declare namespace kotlin {
+    namespace jvm {
+        namespace functions {
+            class Function2<A, B, C> {
+                constructor(func);
+            }
+        }
+    }
+
+    export class Unit {
+    }
+}
+
 
 let MentionAdapter = com.hendraanggrian.widget.MentionAdapter;
 let Mention = com.hendraanggrian.socialview.Mention;
@@ -42,10 +58,10 @@ export class AutoCompleteEditText extends Common {
 
     //Override
     public createNativeView() {
-        var editText: any = super.createNativeView();
+        let editText: any = super.createNativeView();
         const socialAutoCompleteTextView = new com.hendraanggrian.widget.SocialAutoCompleteTextView(this._context);
         this._configureEditText(socialAutoCompleteTextView);
-        var listener = editText.listener;
+        let listener = editText.listener;
         (<any>socialAutoCompleteTextView).addTextChangedListener(listener);
         (<any>socialAutoCompleteTextView).setOnFocusChangeListener(listener);
         (<any>socialAutoCompleteTextView).setOnEditorActionListener(listener);
@@ -64,6 +80,21 @@ export class AutoCompleteEditText extends Common {
                 return false;
             }
         }));
+        let that: WeakRef<AutoCompleteEditText> = new WeakRef(this);
+        (<any>socialAutoCompleteTextView).setMentionTextChangedListener(new kotlin.jvm.functions.Function2<com.hendraanggrian.widget.SocialView, string, kotlin.Unit>({
+            invoke: function (socialView: any, text: string) {
+                if (that && that.get()) {
+                    let args = {
+                        eventName: Common.mentionTextChangedEvent,
+                        object: socialView,
+                        text: text
+                    };
+                    that.get().notify(args);
+                }
+                return null;
+            }
+        }));
+
         (<any>socialAutoCompleteTextView).listener = listener;
         return socialAutoCompleteTextView;
     }

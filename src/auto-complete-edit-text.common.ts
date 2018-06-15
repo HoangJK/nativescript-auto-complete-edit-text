@@ -5,8 +5,7 @@ import { Style, CssProperty } from "tns-core-modules/ui/text-base";
 import { Color } from "tns-core-modules/color";
 
 export class Common extends TextView {
-    public hashtagColor;
-    public mentionColor;
+    public static mentionTextChangedEvent = "mentionTextChanged";
 }
 
 
