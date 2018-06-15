@@ -3,7 +3,8 @@
 <ScrollView>
     <StackLayout backgroundColor="#ccc">
         <Label [text]="contentMessage" textWrap="true"></Label>
-        <AutoCompleteEditText class="comment-input" [(ngModel)]="contentMessage" [mentionItems]="mentionItems" editable="true"></AutoCompleteEditText>
+        <AutoCompleteEditText class="comment-input" [(ngModel)]="contentMessage" [mentionItems]="mentionItems" (mentionTextChanged)="onMentionTextChanged($event)"
+            editable="true"></AutoCompleteEditText>
         <Button text="Show Text"></Button>
     </StackLayout>
 </ScrollView>

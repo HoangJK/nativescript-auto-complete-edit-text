@@ -110,8 +110,8 @@ export class AppComponent {
 
     }
 
-    onTextChanged(args) {
-
+    onMentionTextChanged(args) {
+        console.log(args);
     }
 
 }
