@@ -56,6 +56,8 @@ let Mention = com.hendraanggrian.socialview.Mention;
 
 export class AutoCompleteEditText extends Common {
 
+    private _mentionAdapter: com.hendraanggrian.widget.MentionAdapter;
+
     //Override
     public createNativeView() {
         let editText: any = super.createNativeView();
@@ -80,6 +82,7 @@ export class AutoCompleteEditText extends Common {
                 return false;
             }
         }));
+        (<any>socialAutoCompleteTextView).setThreshold(0);
         let that: WeakRef<AutoCompleteEditText> = new WeakRef(this);
         (<any>socialAutoCompleteTextView).setMentionTextChangedListener(new kotlin.jvm.functions.Function2<com.hendraanggrian.widget.SocialView, string, kotlin.Unit>({
             invoke: function (socialView: any, text: string) {
@@ -94,7 +97,9 @@ export class AutoCompleteEditText extends Common {
                 return null;
             }
         }));
-
+        //Set mention adapter for auto complete
+        this._mentionAdapter = new MentionAdapter(utils.ad.getApplicationContext());
+        (<any>socialAutoCompleteTextView).setMentionAdapter(this._mentionAdapter);
         (<any>socialAutoCompleteTextView).listener = listener;
         return socialAutoCompleteTextView;
     }
@@ -122,10 +127,15 @@ export class AutoCompleteEditText extends Common {
     }
 
     public [mentionItemsProperty.setNative](mentionItems: Array<any>) {
-        let mentionAdapter = new MentionAdapter(utils.ad.getApplicationContext());
+        console.log("mentionItemsProperty");
+        this._mentionAdapter.clear();
         mentionItems.forEach((item: any) => {
-            mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
+            if (item.avatar) {
+                this._mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
+            }
+            else {
+                this._mentionAdapter.add(new Mention(item.username, item.displayName));
+            }
         });
-        this.nativeView.setMentionAdapter(mentionAdapter);
     }
 }
