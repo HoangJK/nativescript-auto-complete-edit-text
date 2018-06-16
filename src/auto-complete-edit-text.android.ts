@@ -130,7 +130,6 @@ export class AutoCompleteEditText extends Common {
         if (mentionItems && mentionItems.length > 0) {
             this._mentionAdapter.clear();
             mentionItems.forEach((item: any) => {
-                let mentionData = new Mention();
                 if (item.avatar) {
 
                     this._mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
