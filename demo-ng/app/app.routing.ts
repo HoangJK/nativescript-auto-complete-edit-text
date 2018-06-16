@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
+import { NativeScriptHttpClientModule } from "nativescript-angular/http-client";
 import { Routes } from "@angular/router";
 
 import { ItemsComponent } from "./item/items.component";
@@ -12,7 +13,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [NativeScriptRouterModule.forRoot(routes)],
+    imports: [NativeScriptRouterModule.forRoot(routes), NativeScriptHttpClientModule],
     exports: [NativeScriptRouterModule]
 })
 export class AppRoutingModule { }

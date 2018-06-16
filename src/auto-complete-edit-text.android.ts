@@ -127,15 +127,18 @@ export class AutoCompleteEditText extends Common {
     }
 
     public [mentionItemsProperty.setNative](mentionItems: Array<any>) {
-        console.log("mentionItemsProperty");
-        this._mentionAdapter.clear();
-        mentionItems.forEach((item: any) => {
-            if (item.avatar) {
-                this._mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
-            }
-            else {
-                this._mentionAdapter.add(new Mention(item.username, item.displayName));
-            }
-        });
+        if (mentionItems && mentionItems.length > 0) {
+            this._mentionAdapter.clear();
+            mentionItems.forEach((item: any) => {
+                let mentionData = new Mention();
+                if (item.avatar) {
+
+                    this._mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
+                }
+                else {
+                    this._mentionAdapter.add(new Mention(item.username, item.displayName));
+                }
+            });
+        }
     }
 }

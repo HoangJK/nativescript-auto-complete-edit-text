@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 
 @Component({
     selector: "ns-app",
@@ -23,28 +24,51 @@ export class AppComponent {
         },
     ];
 
+    constructor(
+        private http: HttpClient
+    ) {
+
+    }
+
     ngOnInit() {
         var self = this;
 
     }
 
     onMentionTextChanged(args) {
-        console.log(args);
+        if (!args.text) {
+            this.mentionItems = [];
+            return;
+        }
+        let self = this;
+        this.getMockData().subscribe(
+            (result: Array<any>) => {
+                self.getResponseInfo(result);
+
+            },
+            (error) => {
+                console.log(error);
+            });
     }
 
-    btnTap(event) {
-        this.mentionItems = [
-            {
-                username: "aber1",
-                displayName: "Aber 1",
-                avatar: "https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg"
-            },
-            {
-                username: "aber2",
-                displayName: "Aber 2",
-                avatar: "https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg"
-            },
-        ]
+    getMockData() {
+        let serverUrl = "https://jsonplaceholder.typicode.com/users";
+        let headers = new HttpHeaders({
+            "Content-Type": "application/json"
+        });
+        let data = [];
+        return this.http.get(serverUrl, { headers: headers });
+    }
+
+    getResponseInfo(result: Array<any>) {
+        this.mentionItems = [];
+        result.forEach((item) => {
+            this.mentionItems.push({
+                username: item.username,
+                displayName: item.name,
+                avatar: ""
+            });
+        });
     }
 
 }
