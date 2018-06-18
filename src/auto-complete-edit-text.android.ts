@@ -4,12 +4,15 @@ import {
     hashtagColorCssProperty,
     mentionColorProperty,
     mentionColorCssProperty,
-    mentionItemsProperty
+    itemsProperty
 } from "./auto-complete-edit-text.common";
 import { View, Property } from "tns-core-modules/ui/core/view";
 import * as utils from "tns-core-modules/utils/utils";
 import app = require("tns-core-modules/application");
 import { Color } from "tns-core-modules/color";
+import { Label } from "tns-core-modules/ui/label";
+import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
+import { Observable } from "tns-core-modules/data/observable";
 
 global.moduleMerge(Common, exports);
 export declare namespace com {
@@ -21,8 +24,9 @@ export declare namespace com {
             class SocialView {
 
             }
-            class SocialAdapter {
-
+            class SocialAdapter<T> {
+                constructor(context: any, resource: number, textViewResourceId: number);
+                getItem(position: number);
             }
             class MentionAdapter extends android.widget.ArrayAdapter<any> {
                 constructor(context: any);
@@ -50,13 +54,9 @@ declare namespace kotlin {
     }
 }
 
-
-let MentionAdapter = com.hendraanggrian.widget.MentionAdapter;
-let Mention = com.hendraanggrian.socialview.Mention;
-
 export class AutoCompleteEditText extends Common {
 
-    private _mentionAdapter: com.hendraanggrian.widget.MentionAdapter;
+    private _mentionAdapter: any;
 
     //Override
     public createNativeView() {
@@ -98,7 +98,8 @@ export class AutoCompleteEditText extends Common {
             }
         }));
         //Set mention adapter for auto complete
-        this._mentionAdapter = new MentionAdapter(utils.ad.getApplicationContext());
+        ensureMentionAdapterClass();
+        this._mentionAdapter = new MentionAdapterClass(this);
         (<any>socialAutoCompleteTextView).setMentionAdapter(this._mentionAdapter);
         (<any>socialAutoCompleteTextView).listener = listener;
         return socialAutoCompleteTextView;
@@ -126,18 +127,61 @@ export class AutoCompleteEditText extends Common {
         this.nativeView.setMentionColor(value.android);
     }
 
-    public [mentionItemsProperty.setNative](mentionItems: Array<any>) {
-        if (mentionItems && mentionItems.length > 0) {
+    public [itemsProperty.setNative](items: Array<any>) {
+        if (items && items.length > 0) {
             this._mentionAdapter.clear();
-            mentionItems.forEach((item: any) => {
+            items.forEach((item: any) => {
                 if (item.avatar) {
-
-                    this._mentionAdapter.add(new Mention(item.username, item.displayName, item.avatar));
+                    this._mentionAdapter.add(new PersonObject(item.username));
                 }
                 else {
-                    this._mentionAdapter.add(new Mention(item.username, item.displayName));
+                    this._mentionAdapter.add(new PersonObject(item.username));
                 }
             });
         }
+        else {
+            this._mentionAdapter.clear();
+        }
+    }
+}
+
+let MentionAdapterClass;
+function ensureMentionAdapterClass() {
+    if (MentionAdapterClass) {
+        return;
+    }
+    class MentionAdapter extends com.hendraanggrian.widget.SocialAdapter<PersonObject> {
+        constructor(private owner: AutoCompleteEditText) {
+            super(utils.ad.getApplicationContext(), 0, 0);
+            return global.__native(this);
+        }
+        //Override
+        // public getCount() {
+        //     console.log("this.owner.items:", this.owner.items.length);
+        //     return this.owner && this.owner.items && this.owner.items.length ? this.owner.items.length : 0;
+        // }
+
+        //Override
+        public convertToString(person: PersonObject): string {
+            return person.username;
+        }
+
+        //Override
+        public getView(position: number, convertView: android.view.View, parent: android.view.ViewGroup): android.view.View {
+            let linear: android.widget.LinearLayout = new android.widget.LinearLayout(utils.ad.getApplicationContext());
+            linear.setMinimumWidth(200);
+            linear.setMinimumHeight(200);
+            linear.setBackgroundColor((new Color("red")).android);
+            return linear;
+        }
+    }
+    MentionAdapterClass = MentionAdapter;
+}
+
+class PersonObject extends java.lang.Object {
+    public username: string;
+    constructor(username) {
+        super();
+        this.username = username;
     }
 }

@@ -5,6 +5,8 @@ import { Style, CssProperty } from "tns-core-modules/ui/text-base";
 import { Color } from "tns-core-modules/color";
 
 export class Common extends TextView {
+    public items: any[];
+
     public static mentionTextChangedEvent = "mentionTextChanged";
 }
 
@@ -35,8 +37,8 @@ export const mentionColorCssProperty = new CssProperty<Style, Color>({
 });
 mentionColorCssProperty.register(Style);
 
-export const mentionItemsProperty = new Property<Common, Array<any>>({
-    name: "mentionItems",
+export const itemsProperty = new Property<Common, Array<any>>({
+    name: "items",
     valueChanged: (v) => v
 });
-mentionItemsProperty.register(Common);
+itemsProperty.register(Common);

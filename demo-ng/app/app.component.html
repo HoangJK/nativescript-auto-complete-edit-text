@@ -2,7 +2,7 @@
 <!--<page-router-outlet></page-router-outlet>-->
 <ScrollView>
     <StackLayout backgroundColor="#ccc">
-        <AutoCompleteEditText class="comment-input" [(ngModel)]="contentMessage" [mentionItems]="mentionItems" (mentionTextChanged)="onMentionTextChanged($event)"
+        <AutoCompleteEditText [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage" (mentionTextChanged)="onMentionTextChanged($event)"
             editable="true"></AutoCompleteEditText>
     </StackLayout>
 </ScrollView>
