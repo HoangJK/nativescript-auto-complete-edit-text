@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { ObservableArray } from "data/observable-array";
 
 @Component({
     selector: "ns-app",
@@ -8,7 +9,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 
 export class AppComponent {
     public contentMessage = "JK";
-    public mentionItems = [
+    public mentionItems: ObservableArray<any> = new ObservableArray([
         {
             username: "jk",
             displayName: "Hoang Le",
@@ -22,7 +23,7 @@ export class AppComponent {
             username: "user2",
             displayName: "User 2",
         },
-    ];
+    ]);
 
     constructor(
         private http: HttpClient
@@ -37,14 +38,13 @@ export class AppComponent {
 
     onMentionTextChanged(args) {
         if (!args.text) {
-            this.mentionItems = [];
+            this.mentionItems = new ObservableArray([]);
             return;
         }
         let self = this;
         this.getMockData().subscribe(
             (result: Array<any>) => {
                 self.getResponseInfo(result);
-
             },
             (error) => {
                 console.log(error);
@@ -61,7 +61,7 @@ export class AppComponent {
     }
 
     getResponseInfo(result: Array<any>) {
-        this.mentionItems = [];
+        this.mentionItems = new ObservableArray([]);
         result.forEach((item) => {
             this.mentionItems.push({
                 username: item.username,

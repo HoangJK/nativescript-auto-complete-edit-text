@@ -1,8 +1,12 @@
-<!-- https://docs.nativescript.org/angular/core-concepts/angular-navigation.html#page-router-outlet -->
-<!--<page-router-outlet></page-router-outlet>-->
 <ScrollView>
     <StackLayout backgroundColor="#ccc">
         <AutoCompleteEditText [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage" (mentionTextChanged)="onMentionTextChanged($event)"
-            editable="true"></AutoCompleteEditText>
+            editable="true">
+            <ng-template>
+                <StackLayout backgroundColor="red">
+                    <Label text="JK" textWrap="true"></Label>
+                </StackLayout>
+            </ng-template>
+        </AutoCompleteEditText>
     </StackLayout>
 </ScrollView>
