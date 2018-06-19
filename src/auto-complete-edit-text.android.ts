@@ -17,7 +17,7 @@ import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
 import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
 import { Observable } from "tns-core-modules/data/observable";
 
-global.moduleMerge(Common, exports);
+// global.moduleMerge(Common, exports);
 export declare namespace com {
     module hendraanggrian {
         module widget {
@@ -101,7 +101,6 @@ export class AutoCompleteEditText extends Common {
                     };
                     that.get().notify(args);
                 }
-                that.get().refresh();
                 return null;
             }
         }));
@@ -131,7 +130,6 @@ export class AutoCompleteEditText extends Common {
                 view.bindingContext = null;
             }
         });
-        console.log("---refresh---");
         (<android.widget.ArrayAdapter<any>>nativeView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -199,6 +197,10 @@ function ensureMentionAdapterClass() {
             return long(id);
         }
 
+        public hasStableIds(): boolean {
+            return true;
+        }
+
         public getViewTypeCount() {
             return this.owner._itemTemplatesInternal.length;
         }
@@ -214,6 +216,7 @@ function ensureMentionAdapterClass() {
             if (!this.owner) {
                 return null;
             }
+            console.log("convertView before: ", convertView);
             let template = this.owner._getItemTemplate(index);
             let view: View;
             if (convertView) {
@@ -224,33 +227,46 @@ function ensureMentionAdapterClass() {
             }
             else {
                 view = template.createView();
+                console.log("template.createView: ", view)
             }
-            if (!view) {
-                view = this.owner._getDefaultItemContent(index);
-            }
-            this.owner._prepareItem(view, index);
-            if (!view.parent) {
-                // Proxy containers should not get treated as layouts.
-                // Wrap them in a real layout as well.
-                if (view instanceof LayoutBase &&
-                    !(view instanceof ProxyViewContainer)) {
-                    this.owner._addView(view);
-                    convertView = view.nativeViewProtected;
-                } else {
-                    let sp = new StackLayout();
-                    sp.addChild(view);
-                    this.owner._addView(sp);
 
-                    convertView = sp.nativeViewProtected;
+            let args: any = {
+                eventName: "itemLoading", object: this.owner, index: index, view: view,
+                android: parent,
+                ios: undefined
+            };
+            this.owner.notify(args);
+
+            if (!args.view) {
+                args.view = this.owner._getDefaultItemContent(index);
+            }
+            if (args.view) {
+                this.owner._prepareItem(args.view, index);
+                if (!args.view.parent) {
+                    // Proxy containers should not get treated as layouts.
+                    // Wrap them in a real layout as well.
+                    if (args.view instanceof LayoutBase &&
+                        !(args.view instanceof ProxyViewContainer)) {
+                        this.owner._addView(args.view);
+                        console.log("view: ", args.view);
+                        convertView = args.view.nativeViewProtected;
+                    } else {
+                        let sp = new StackLayout();
+                        sp.addChild(args.view);
+                        this.owner._addView(sp);
+                        console.log("stack: ", args.view);
+                        convertView = sp.nativeViewProtected;
+                    }
                 }
+                let realizedItemsForTemplateKey = this.owner._realizedTemplates.get(template.key);
+                if (!realizedItemsForTemplateKey) {
+                    realizedItemsForTemplateKey = new Map<android.view.View, View>();
+                    this.owner._realizedTemplates.set(template.key, realizedItemsForTemplateKey);
+                }
+                realizedItemsForTemplateKey.set(convertView, args.view);
+                this.owner._realizedItems.set(convertView, args.view);
             }
-            let realizedItemsForTemplateKey = this.owner._realizedTemplates.get(template.key);
-            if (!realizedItemsForTemplateKey) {
-                realizedItemsForTemplateKey = new Map<android.view.View, View>();
-                this.owner._realizedTemplates.set(template.key, realizedItemsForTemplateKey);
-            }
-            realizedItemsForTemplateKey.set(convertView, view);
-            this.owner._realizedItems.set(convertView, view);
+            console.log("convertView after: ", convertView);
             return convertView;
         }
     }

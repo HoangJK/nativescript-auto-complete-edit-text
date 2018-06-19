@@ -154,6 +154,7 @@ itemsProperty.register(Common);
 
 export const itemTemplateProperty = new Property<Common, string | Template>({
     name: "itemTemplate", valueChanged: (target) => {
+        console.log("-------------itemTemplateProperty")
         target.refresh();
     }
 });

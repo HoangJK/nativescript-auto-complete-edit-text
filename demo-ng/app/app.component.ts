@@ -9,21 +9,7 @@ import { ObservableArray } from "data/observable-array";
 
 export class AppComponent {
     public contentMessage = "JK";
-    public mentionItems: ObservableArray<any> = new ObservableArray([
-        {
-            username: "jk",
-            displayName: "Hoang Le",
-            avatar: "https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg"
-        },
-        {
-            username: "user1",
-            displayName: "User 1",
-        },
-        {
-            username: "user2",
-            displayName: "User 2",
-        },
-    ]);
+    public mentionItems: ObservableArray<any> = new ObservableArray([]);
 
     constructor(
         private http: HttpClient
@@ -69,6 +55,24 @@ export class AppComponent {
                 avatar: ""
             });
         });
+    }
+
+    btnChangeData(event) {
+        this.mentionItems = new ObservableArray([
+            {
+                username: "jk",
+                displayName: "Hoang Le",
+                avatar: "https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg"
+            },
+            {
+                username: "user1",
+                displayName: "User 1",
+            },
+            {
+                username: "user2",
+                displayName: "User 2",
+            },
+        ]);
     }
 
 }
