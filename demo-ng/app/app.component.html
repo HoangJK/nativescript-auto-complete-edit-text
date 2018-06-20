@@ -1,15 +1,17 @@
 <ScrollView>
     <StackLayout backgroundColor="#ccc">
         <Label [text]="contentMessage" textWrap="true"></Label>
-        <AutoCompleteEditText item [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage" (mentionTextChanged)="onMentionTextChanged($event)"
+        <AutoCompleteEditText [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage" (mentionTextChanged)="onMentionTextChanged($event)"
             editable="true">
-            <ng-template>
+            <ng-template let-item="item">
                 <GridLayout class="list-group-item">
-                    <Label text="JK1234"></Label>
+                    <StackLayout orientation="horizontal" verticalAlignment="center">
+                        <Image src="https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg" width="50" height="50"></Image>
+                        <Label marginLeft="10" [text]="item.displayName"></Label>
+                    </StackLayout>
                 </GridLayout>
             </ng-template>
         </AutoCompleteEditText>
         <Button text="Change Data" (tap)="btnChangeData($event)"></Button>
-
     </StackLayout>
 </ScrollView>

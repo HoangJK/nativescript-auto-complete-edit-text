@@ -29,9 +29,8 @@ export declare namespace com {
             class SocialView {
 
             }
-            class SocialAdapter {
+            class SocialAdapter<T> extends android.widget.ArrayAdapter<any> {
                 constructor(context: any, resource: number, textViewResourceId: number);
-                getItem(position: number);
             }
             class MentionAdapter extends android.widget.ArrayAdapter<any> {
                 constructor(context: any);
@@ -167,27 +166,25 @@ function ensureMentionAdapterClass() {
     if (MentionAdapterClass) {
         return;
     }
-    class MentionAdapter extends android.widget.ArrayAdapter<any> {
+    class MentionAdapter extends com.hendraanggrian.widget.SocialAdapter<any> {
         constructor(public owner: AutoCompleteEditText) {
             super(utils.ad.getApplicationContext(), 0, 0);
             return global.__native(this);
         }
 
-        //Override
         public getCount(): number {
             return this.owner && this.owner.items && this.owner.items.length ? this.owner.items.length : 0;
         }
 
-        //Override
         public getItem(index: number) {
             if (this.owner && this.owner.items && index < this.owner.items.length) {
                 let getItem = (<any>this.owner.items).getItem;
-                return getItem ? getItem.call(this.owner.items, index) : this.owner.items[index];
+                let item = getItem ? getItem.call(this.owner.items, index) : this.owner.items[index];
+                return new MentionItemObject(item.mention);
             }
             return null;
         }
 
-        //Override
         public getItemId(i: number) {
             let item = this.getItem(i);
             let id = i;
@@ -195,10 +192,6 @@ function ensureMentionAdapterClass() {
                 id = this.owner.itemIdGenerator(item, i, this.owner.items);
             }
             return long(id);
-        }
-
-        public hasStableIds(): boolean {
-            return true;
         }
 
         public getViewTypeCount() {
@@ -216,7 +209,6 @@ function ensureMentionAdapterClass() {
             if (!this.owner) {
                 return null;
             }
-            console.log("convertView before: ", convertView);
             let template = this.owner._getItemTemplate(index);
             let view: View;
             if (convertView) {
@@ -227,7 +219,6 @@ function ensureMentionAdapterClass() {
             }
             else {
                 view = template.createView();
-                console.log("template.createView: ", view)
             }
 
             let args: any = {
@@ -243,18 +234,14 @@ function ensureMentionAdapterClass() {
             if (args.view) {
                 this.owner._prepareItem(args.view, index);
                 if (!args.view.parent) {
-                    // Proxy containers should not get treated as layouts.
-                    // Wrap them in a real layout as well.
                     if (args.view instanceof LayoutBase &&
                         !(args.view instanceof ProxyViewContainer)) {
                         this.owner._addView(args.view);
-                        console.log("view: ", args.view);
                         convertView = args.view.nativeViewProtected;
                     } else {
                         let sp = new StackLayout();
                         sp.addChild(args.view);
                         this.owner._addView(sp);
-                        console.log("stack: ", args.view);
                         convertView = sp.nativeViewProtected;
                     }
                 }
@@ -266,9 +253,26 @@ function ensureMentionAdapterClass() {
                 realizedItemsForTemplateKey.set(convertView, args.view);
                 this.owner._realizedItems.set(convertView, args.view);
             }
-            console.log("convertView after: ", convertView);
             return convertView;
         }
+
+        public convertToString(object: MentionItemObject) {
+            return object.mention;
+        }
+
     }
+
+    class MentionItemObject extends java.lang.Object {
+        public mention: string;
+        constructor(mention: string) {
+            super();
+            this.mention = mention;
+        }
+    }
+
     MentionAdapterClass = MentionAdapter;
+}
+
+export class MentionItem {
+    public mention: string;
 }

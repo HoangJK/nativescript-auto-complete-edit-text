@@ -103,7 +103,6 @@ export class AutoCompleteEditTextComponent implements DoCheck, OnDestroy, AfterC
         // The itemTemplateQuery may be changed after list items are added that contain <template> inside,
         // so cache and use only the original template to avoid errors.
         this.itemTemplate = this.itemTemplateQuery;
-        console.log("---this.itemTemplate: ", this.itemTemplate);
         if (this._templateMap) {
 
             const templates: KeyedTemplate[] = [];
