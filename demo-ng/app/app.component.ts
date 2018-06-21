@@ -2,6 +2,8 @@ import { Component } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { ObservableArray } from "data/observable-array";
 
+let timeout;
+
 @Component({
     selector: "ns-app",
     templateUrl: "app.component.html",
@@ -23,18 +25,23 @@ export class AppComponent {
     }
 
     onMentionTextChanged(args) {
-        if (!args.text) {
-            this.mentionItems = new ObservableArray([]);
-            return;
+        if (timeout) {
+            clearTimeout(timeout);
         }
         let self = this;
-        // this.getMockData().subscribe(
-        //     (result: Array<any>) => {
-        //         self.getResponseInfo(result);
-        //     },
-        //     (error) => {
-        //         console.log(error);
-        //     });
+        timeout = setTimeout(() => {
+            if (!args.text) {
+                self.mentionItems = new ObservableArray([]);
+                return;
+            }
+            self.getMockData().subscribe(
+                (result: Array<any>) => {
+                    self.getResponseInfo(result);
+                },
+                (error) => {
+                    console.log(error);
+                });
+        }, 1000);
     }
 
     getMockData() {
