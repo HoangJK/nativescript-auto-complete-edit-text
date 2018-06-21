@@ -1,8 +1,8 @@
 <ScrollView>
     <StackLayout backgroundColor="#ccc">
         <Label [text]="contentMessage" textWrap="true"></Label>
-        <AutoCompleteEditText [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage" (mentionTextChanged)="onMentionTextChanged($event)"
-            editable="true">
+        <AutoCompleteEditText mentionKeyword="username" [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage"
+            (mentionTextChanged)="onMentionTextChanged($event)" editable="true">
             <ng-template let-item="item">
                 <GridLayout class="list-group-item">
                     <StackLayout orientation="horizontal" verticalAlignment="center">

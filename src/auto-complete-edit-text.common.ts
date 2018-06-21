@@ -34,6 +34,7 @@ export class Common extends TextView {
     public items: any[];
     public itemTemplate: any;
     public itemTemplates: string | Array<KeyedTemplate>;
+    public mentionKeyword: string;
 
     public refresh() {
         //
@@ -170,3 +171,9 @@ export const itemTemplatesProperty = new Property<Common, string | Array<KeyedTe
     }
 })
 itemTemplatesProperty.register(Common);
+
+
+export const mentionKeywordProperty = new Property<Common, string>({
+    name: "mentionKeyword", valueConverter: (value) => value
+});
+mentionKeywordProperty.register(Common);

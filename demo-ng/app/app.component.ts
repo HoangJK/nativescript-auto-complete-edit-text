@@ -50,7 +50,7 @@ export class AppComponent {
         this.mentionItems = new ObservableArray([]);
         result.forEach((item) => {
             this.mentionItems.push({
-                mention: item.username,
+                username: item.username,
                 displayName: item.name,
                 avatar: ""
             });
@@ -60,16 +60,16 @@ export class AppComponent {
     btnChangeData(event) {
         this.mentionItems = new ObservableArray([
             {
-                mention: "jk",
+                username: "jk",
                 displayName: "Hoang Le",
                 avatar: "https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg"
             },
             {
-                mention: "user1",
+                username: "user1",
                 displayName: "User 1",
             },
             {
-                mention: "user2",
+                username: "user2",
                 displayName: "User 2",
             },
         ]);

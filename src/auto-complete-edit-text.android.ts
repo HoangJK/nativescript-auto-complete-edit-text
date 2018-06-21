@@ -180,7 +180,11 @@ function ensureMentionAdapterClass() {
             if (this.owner && this.owner.items && index < this.owner.items.length) {
                 let getItem = (<any>this.owner.items).getItem;
                 let item = getItem ? getItem.call(this.owner.items, index) : this.owner.items[index];
-                return new MentionItemObject(item.mention);
+                let keyword = this.owner.mentionKeyword ? this.owner.mentionKeyword : "mention";
+                if (!item[keyword]) {
+                    throw ("Property 'mentionKeyword' is empty!");
+                }
+                return new MentionItemObject(item[keyword]);
             }
             return null;
         }
