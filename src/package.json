@@ -1,6 +1,6 @@
 {
     "name": "nativescript-auto-complete-edit-text",
-    "version": "1.1.3",
+    "version": "1.1.5",
     "description": "Your awesome NativeScript plugin.",
     "main": "auto-complete-edit-text",
     "typings": "index.d.ts",

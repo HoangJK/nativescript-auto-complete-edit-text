@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { View, KeyedTemplate } from "tns-core-modules/ui/core/view";
 import { ObservableArray } from "tns-core-modules/data/observable-array";
-import { AutoCompleteEditText } from "../";
+import { AutoCompleteEditText } from "../index";
 import { getSingleViewRecursive } from "nativescript-angular/element-registry";
 import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
 import { profile } from "tns-core-modules/profiling";

@@ -1,7 +1,7 @@
 import { Directive, forwardRef, ElementRef, AfterViewInit, HostListener } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BaseValueAccessor } from "nativescript-angular";
-import { AutoCompleteEditText } from "../";
+import { AutoCompleteEditText } from "../index";
 
 @Directive({
     selector: "AutoCompleteEditText[ngModel], AutoCompleteEditText[formControlName]",

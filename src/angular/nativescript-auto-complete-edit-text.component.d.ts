@@ -1,6 +1,6 @@
 import { TemplateRef, DoCheck, OnDestroy, AfterContentInit, ViewContainerRef, EventEmitter, EmbeddedViewRef, ElementRef, IterableDiffers } from "@angular/core";
 import { View } from "tns-core-modules/ui/core/view";
-import { AutoCompleteEditText } from "../";
+import { AutoCompleteEditText } from "../index";
 export declare class ListItemContext {
     $implicit: any;
     item: any;

@@ -1,6 +1,6 @@
 import { ElementRef, AfterViewInit } from "@angular/core";
 import { BaseValueAccessor } from "nativescript-angular";
-import { AutoCompleteEditText } from "../";
+import { AutoCompleteEditText } from "../index";
 export declare class AutoCompleteEditTextDirective extends BaseValueAccessor<AutoCompleteEditText> implements AfterViewInit {
     elementRef: ElementRef;
     private _normalizedValue;
