@@ -10,11 +10,11 @@ import { Color } from "tns-core-modules/color";
 
 export module knownTemplates {
     export const itemTemplate = "itemTemplate";
-}
+};
 
 export module knownMultiTemplates {
     export const itemTemplates = "itemTemplates";
-}
+};
 
 export class Common extends TextView {
     public static mentionTextChangedEvent = "mentionTextChanged";
@@ -109,8 +109,7 @@ export class Common extends TextView {
         this.refresh();
     }
 
-}
-
+};
 
 export const hashtagColorProperty = new Property<Common, Color>({
     name: "hashtagColor",
@@ -155,7 +154,6 @@ itemsProperty.register(Common);
 
 export const itemTemplateProperty = new Property<Common, string | Template>({
     name: "itemTemplate", valueChanged: (target) => {
-        console.log("-------------itemTemplateProperty")
         target.refresh();
     }
 });
@@ -169,7 +167,7 @@ export const itemTemplatesProperty = new Property<Common, string | Array<KeyedTe
 
         return value;
     }
-})
+});
 itemTemplatesProperty.register(Common);
 
 
