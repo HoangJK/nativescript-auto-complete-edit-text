@@ -17,47 +17,6 @@ import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
 import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
 import { Observable } from "tns-core-modules/data/observable";
 
-// global.moduleMerge(Common, exports);
-export declare namespace com {
-    module hendraanggrian {
-        module widget {
-            class SocialAutoCompleteTextView {
-                constructor(context);
-                getAdapter();
-                setAdapter(adapter: any);
-            }
-            class SocialView {
-
-            }
-            class SocialAdapter<T> extends android.widget.ArrayAdapter<any> {
-                constructor(context: any, resource: number, textViewResourceId: number);
-            }
-            class MentionAdapter extends android.widget.ArrayAdapter<any> {
-                constructor(context: any);
-            }
-        }
-        module socialview {
-            class Mention {
-                constructor(username?: string);
-                constructor(username?: string, displayName?: string);
-                constructor(username?: string, displayName?: string, avatar?: any);
-            }
-        }
-    }
-}
-declare namespace kotlin {
-    namespace jvm {
-        namespace functions {
-            class Function2<A, B, C> {
-                constructor(func);
-            }
-        }
-    }
-
-    export class Unit {
-    }
-}
-
 export class AutoCompleteEditText extends Common {
     nativeViewProtected: com.hendraanggrian.widget.SocialAutoCompleteTextView;
     public _realizedItems = new Map<android.view.View, View>();
@@ -90,8 +49,8 @@ export class AutoCompleteEditText extends Common {
         }));
         (<any>socialAutoCompleteTextView).setThreshold(0);
         let that: WeakRef<AutoCompleteEditText> = new WeakRef(this);
-        (<any>socialAutoCompleteTextView).setMentionTextChangedListener(new kotlin.jvm.functions.Function2<com.hendraanggrian.widget.SocialView, string, kotlin.Unit>({
-            invoke: function (socialView: any, text: string) {
+        (<any>socialAutoCompleteTextView).setMentionTextChangedListener(new kotlin.jvm.functions.Function2<com.hendraanggrian.socialview.SocialView, string, kotlin.Unit>({
+            invoke: function (socialView: any, text: java.lang.String) {
                 if (that && that.get()) {
                     let args = {
                         eventName: Common.mentionTextChangedEvent,
