@@ -12,10 +12,9 @@ import { Color } from "tns-core-modules/color";
 export class AutoCompleteEditText extends Common {
     nativeViewProtected: HKWTextView;
     private _hkTextViewDelegate: HKWTextViewDelegateImpl;
-
-    constructor() {
-        super();
-    }
+    private _popoverView: Popover;
+    public _currentReplaceTextLocation: number;
+    public _currentReplaceText: string;
 
     public createNativeView() {
         const hkwTextView = new HKWTextView();
@@ -30,14 +29,16 @@ export class AutoCompleteEditText extends Common {
         super.onLoaded();
         this._hkTextViewDelegate = HKWTextViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this))
         this.nativeView.delegate = this._hkTextViewDelegate;
+        this._popoverView = new Popover({ showHandler: null, dismissHandler: null });
     }
 
     public onUnLoaded() {
         this.nativeView.delegate = null;
         super.onUnloaded();
+        this._popoverView = null;
     }
 
-    detectHashTagMention() {
+    detectTag() {
         let that = new WeakRef<any>(this);
         this.nativeView.transformTextAtRangeWithTransformer(new NSRange({ location: 0, length: this.nativeView.text.length }), (input: NSAttributedString): NSAttributedString => {
             let stringWithTags = that.get().nativeView.text;
@@ -73,24 +74,69 @@ export class AutoCompleteEditText extends Common {
         });
     }
 
+    detectMentionTextChanged() {
+        let mentionEditing = false;
+        let stringWithTags = this.nativeView.text;
+        let regexMention = new NSRegularExpression({
+            pattern: "[@](\\w+)",
+            options: NSRegularExpressionOptions.CaseInsensitive
+        });
+        let matchesMention = regexMention.matchesInStringOptionsRange(stringWithTags, NSMatchingOptions.ReportProgress, new NSRange({ location: 0, length: stringWithTags.length }));
+        for (let i = 0; i < matchesMention.count; i++) {
+            let matchRes = matchesMention.objectAtIndex(i);
+            let wordRange = matchRes.rangeAtIndex(0);
+            if (this._currentReplaceTextLocation >= wordRange.location && this._currentReplaceTextLocation < (wordRange.location + wordRange.length)) {
+                let args = {
+                    eventName: Common.mentionTextChangedEvent,
+                    object: this.nativeView,
+                    text: this._currentReplaceText
+                };
+                this.notify(args);
+            }
+        }
+    }
+
+    detectHashTagTextChanged() {
+        let mentionEditing = false;
+        let stringWithTags = this.nativeView.text;
+        let regexMention = new NSRegularExpression({
+            pattern: "[#](\\w+)",
+            options: NSRegularExpressionOptions.CaseInsensitive
+        });
+        let matchesMention = regexMention.matchesInStringOptionsRange(stringWithTags, NSMatchingOptions.ReportProgress, new NSRange({ location: 0, length: stringWithTags.length }));
+        for (let i = 0; i < matchesMention.count; i++) {
+            let matchRes = matchesMention.objectAtIndex(i);
+            let wordRange = matchRes.rangeAtIndex(0);
+            if (this._currentReplaceTextLocation >= wordRange.location && this._currentReplaceTextLocation < (wordRange.location + wordRange.length)) {
+                console.log("-----hashTagEditing----");
+            }
+        }
+    }
+
+    showPopover() {
+        let point = CGPointMake(this.nativeView.frame.size.width - 60, 55);
+        let aView = UIView.alloc().initWithFrame(CGRectMake(0, 0, this.nativeView.frame.size.width, 180));
+        this._popoverView.showPoint(aView, point);
+    }
+
     public [hashtagColorProperty.setNative](value: Color) {
         this.hashtagColor = value;
-        this.detectHashTagMention();
+        this.detectTag();
     }
 
     public [hashtagColorCssProperty.setNative](value: Color) {
         this.hashtagColor = value;
-        this.detectHashTagMention();
+        this.detectTag();
     }
 
     public [mentionColorProperty.setNative](value: Color) {
         this.mentionColor = value;
-        this.detectHashTagMention();
+        this.detectTag();
     }
 
     public [mentionColorCssProperty.setNative](value: Color) {
         this.mentionColor = value;
-        this.detectHashTagMention();
+        this.detectTag();
     }
 }
 
@@ -107,6 +153,7 @@ export class HKWTextViewDelegateImpl extends NSObject implements HKWTextViewDele
     }
 
     public textViewShouldBeginEditing(textView: UITextView): boolean {
+        this.owner.get().detectTag();
         return this._originalDelegate.textViewShouldBeginEditing(textView);
     }
 
@@ -120,10 +167,14 @@ export class HKWTextViewDelegateImpl extends NSObject implements HKWTextViewDele
 
     public textViewDidChange(textView: UITextView): void {
         this._originalDelegate.textViewDidChange(textView);
-        this.owner.get().detectHashTagMention();
+        this.owner.get().detectTag();
+        this.owner.get().detectMentionTextChanged();
+        // this.owner.get().showPopover();
     }
 
     public textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, replacementString: string): boolean {
+        this.owner.get()._currentReplaceTextLocation = range.location - range.length;
+        this.owner.get()._currentReplaceText = replacementString;
         return this._originalDelegate.textViewShouldChangeTextInRangeReplacementText(textView, range, replacementString);
     }
 

@@ -23,9 +23,8 @@ export class AppComponent {
         var self = this;
     }
 
-    onTextChange(event) {
-        console.log("event.object.text: ", event.object.text);
-        console.log("contentMessage: ", this.contentMessage);
+    mentionTextChanged(event) {
+        console.log("mentionTextChanged: ", event.text);
     }
 
     onMentionTextChanged(args) {
@@ -84,6 +83,10 @@ export class AppComponent {
                 displayName: "User 2",
             },
         ]);
+    }
+
+    btnDebug(event) {
+        console.log(event);
     }
 
 }

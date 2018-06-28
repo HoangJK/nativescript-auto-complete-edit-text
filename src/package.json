@@ -27,7 +27,8 @@
         "clean": "cd ../demo && rimraf hooks node_modules platforms && cd ../src && rimraf node_modules && npm run plugin.link",
         "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**'",
         "prepare": "node scripts/prepare.js",
-        "ngc": "ngc --project tsconfig.aot.json"
+        "ngc": "ngc --project tsconfig.aot.json",
+        "generate.declaration.ios": "cd ../demo-ng && TNS_TYPESCRIPT_DECLARATIONS_PATH=\"$(pwd)/typings\" tns build ios"
     },
     "keywords": [
         "NativeScript",
