@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { ObservableArray } from "data/observable-array";
 
@@ -10,7 +10,7 @@ let timeout;
 })
 
 export class AppComponent {
-    public contentMessage = "JK";
+    public contentMessage = "#JK #Liying asdasd #ZhaoLiYing @hoangle";
     public mentionItems: ObservableArray<any> = new ObservableArray([]);
 
     constructor(
@@ -21,7 +21,11 @@ export class AppComponent {
 
     ngOnInit() {
         var self = this;
+    }
 
+    onTextChange(event) {
+        console.log("event.object.text: ", event.object.text);
+        console.log("contentMessage: ", this.contentMessage);
     }
 
     onMentionTextChanged(args) {

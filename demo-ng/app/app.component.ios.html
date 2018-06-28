@@ -1,0 +1,9 @@
+<ScrollView>
+    <StackLayout backgroundColor="#ccc">
+        <Label [text]="contentMessage" textWrap="true"></Label>
+        <AutoCompleteEditText class="comment-input" [(ngModel)]="contentMessage" (textChange)="onTextChange($event)" editable="true">
+
+        </AutoCompleteEditText>
+        <Button text="Change Data" (tap)="btnChangeData($event)"></Button>
+    </StackLayout>
+</ScrollView>

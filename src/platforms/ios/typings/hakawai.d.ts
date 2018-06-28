@@ -819,6 +819,8 @@ declare var HKWSimplePluginProtocol: {
 
 declare class HKWTextView extends UITextView {
 
+    public constructor();
+
     static alloc(): HKWTextView; // inherited from NSObject
 
     static appearance(): HKWTextView; // inherited from UIAppearance

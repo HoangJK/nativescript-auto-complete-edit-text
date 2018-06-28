@@ -35,6 +35,8 @@ export class Common extends TextView {
     public itemTemplate: any;
     public itemTemplates: string | Array<KeyedTemplate>;
     public mentionKeyword: string;
+    public hashtagColor: Color;
+    public mentionColor: Color;
 
     public refresh() {
         //
