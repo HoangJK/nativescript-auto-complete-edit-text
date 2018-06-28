@@ -38,6 +38,17 @@ export class AutoCompleteEditText extends Common {
         this._popoverView = null;
     }
 
+    refresh() {
+        if (this.items && this.items.length > 0) {
+            this.showPopover();
+        }
+        else {
+            if (this._popoverView) {
+                this._popoverView.dismiss();
+            }
+        }
+    }
+
     detectTag() {
         let that = new WeakRef<any>(this);
         this.nativeView.transformTextAtRangeWithTransformer(new NSRange({ location: 0, length: this.nativeView.text.length }), (input: NSAttributedString): NSAttributedString => {
@@ -153,11 +164,11 @@ export class HKWTextViewDelegateImpl extends NSObject implements HKWTextViewDele
     }
 
     public textViewShouldBeginEditing(textView: UITextView): boolean {
-        this.owner.get().detectTag();
         return this._originalDelegate.textViewShouldBeginEditing(textView);
     }
 
     public textViewDidBeginEditing(textView: UITextView) {
+        this.owner.get().detectTag();
         this._originalDelegate.textViewDidBeginEditing(textView);
     }
 

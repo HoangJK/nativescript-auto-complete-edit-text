@@ -23,11 +23,8 @@ export class AppComponent {
         var self = this;
     }
 
-    mentionTextChanged(event) {
-        console.log("mentionTextChanged: ", event.text);
-    }
-
     onMentionTextChanged(args) {
+        console.log("mentionTextChanged: ", args.text);
         if (timeout) {
             clearTimeout(timeout);
         }
