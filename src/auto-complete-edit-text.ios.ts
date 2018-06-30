@@ -8,6 +8,12 @@ import {
     itemTemplatesProperty
 } from "./auto-complete-edit-text.common";
 import { Color } from "tns-core-modules/color";
+import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
+import { ListView } from "tns-core-modules/ui/list-view";
+import { ProxyViewContainer } from "tns-core-modules/ui/proxy-view-container";
+import { View, Property, KeyedTemplate, Template } from "tns-core-modules/ui/core/view";
+import { layout } from "tns-core-modules/utils/utils";
+import { Observable } from "tns-core-modules/data/observable";
 
 export class AutoCompleteEditText extends Common {
     nativeViewProtected: HKWTextView;
@@ -19,6 +25,7 @@ export class AutoCompleteEditText extends Common {
     public hkTextViewDelegate: HKWTextViewDelegateImpl;
     public tableViewDelegate: TableViewDelegateImpl;
     public tableViewDataSource: TableViewDataSourceImpl;
+    public map = new Map<TableViewCellImpl, View>();
 
     public createNativeView() {
         const hkwTextView = new HKWTextView();
@@ -27,8 +34,7 @@ export class AutoCompleteEditText extends Common {
 
     public onLoaded() {
         super.onLoaded();
-        this.hkTextViewDelegate = HKWTextViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
-        this.nativeView.delegate = this.hkTextViewDelegate;
+        this.nativeView.delegate = this.hkTextViewDelegate = HKWTextViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
         this.initPopover();
     }
 
@@ -40,11 +46,18 @@ export class AutoCompleteEditText extends Common {
     }
 
     refresh() {
-        if (this.isMentionEditing && this.items && this.items.length > 0) {
-            this.showPopover();
-        }
-        else {
-            this.dismissPopover();
+        this.map.forEach((view, nativeView, map) => {
+            if (!(view.bindingContext instanceof Observable)) {
+                view.bindingContext = null;
+            }
+        });
+        if (this.isLoaded) {
+            if (this.isMentionEditing && this.items && this.items.length > 0) {
+                this.showPopover();
+            }
+            else {
+                this.dismissPopover();
+            }
         }
     }
 
@@ -146,13 +159,12 @@ export class AutoCompleteEditText extends Common {
 
     initTableView() {
         if (!this.tableView) {
-            this.tableView = new UITableView({ frame: CGRectMake(0, 0, this.nativeView.frame.size.width, this.nativeView.frame.size.width), style: UITableViewStyle.Plain });
-            this.tableViewDelegate = TableViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
-            this.tableViewDataSource = TableViewDataSourceImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
-            this.tableView.delegate = this.tableViewDelegate;
-            this.tableView.dataSource = this.tableViewDataSource;
-            this.tableView.backgroundColor = UIColor.redColor;
-            this.tableView.scrollEnabled = false;
+            this.tableView = new UITableView({ frame: CGRectMake(0, 0, this.nativeView.frame.size.width, 135), style: UITableViewStyle.Plain });
+            this.tableView.estimatedRowHeight = 44;
+            this.tableView.rowHeight = UITableViewAutomaticDimension;
+            this.tableView.delegate = this.tableViewDelegate = TableViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
+            this.tableView.dataSource = this.tableViewDataSource = TableViewDataSourceImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
+            this.tableView.clipsToBounds = true;
         }
         else {
             this.tableView.reloadData();
@@ -177,6 +189,17 @@ export class AutoCompleteEditText extends Common {
     public [mentionColorCssProperty.setNative](value: Color) {
         this.mentionColor = value;
         this.detectTag();
+    }
+
+    [itemTemplatesProperty.getDefault](): KeyedTemplate[] {
+        return null;
+    }
+    [itemTemplatesProperty.setNative](value: KeyedTemplate[]) {
+        this._itemTemplatesInternal = new Array<KeyedTemplate>(this._defaultTemplate);
+        if (value) {
+            this._itemTemplatesInternal = this._itemTemplatesInternal.concat(value);
+        }
+        this.refresh();
     }
 }
 
@@ -257,19 +280,73 @@ export class TableViewDataSourceImpl extends NSObject implements UITableViewData
 
     public tableViewCellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell {
         let owner = this._owner.get();
-        let cell: UITableViewCell;
-        cell = new UITableViewCell({ style: UITableViewCellStyle.Default, reuseIdentifier: null });
+        let cell: TableViewCellImpl;
         if (owner) {
-            let getItem = (<any>owner.items).getItem;
-            let item = getItem ? getItem.call(owner.items, indexPath.row) : owner.items[indexPath.row];
-            let keyword = owner.mentionKeyword ? owner.mentionKeyword : "mention";
-            if (!item[keyword]) {
-                throw ("Property 'mentionKeyword' is empty!");
+            let template = owner._getItemTemplate(indexPath.row);
+            cell = <TableViewCellImpl>(owner.tableView.dequeueReusableCellWithIdentifier(template.key) || TableViewCellImpl.initWithEmptyBackground());
+            //prepareCell
+            let cellHeight: number;
+            let view = cell.view;
+            if (!view) {
+                view = owner._getItemTemplate(indexPath.row).createView();
             }
-
-            cell.textLabel.text = item[keyword];
+            let args: any = {
+                eventName: "itemLoading",
+                object: owner,
+                index: indexPath.row,
+                view: view,
+                ios: cell,
+                android: undefined
+            };
+            owner.notify(args);
+            view = args.view || owner._getDefaultItemContent(indexPath.row);
+            // Proxy containers should not get treated as layouts.
+            // Wrap them in a real layout as well.
+            if (view instanceof ProxyViewContainer) {
+                let sp = new StackLayout();
+                sp.addChild(view);
+                view = sp;
+            }
+            owner._prepareItem(view, indexPath.row);
+            owner.map.set(cell, view);
+            if (view && !view.parent && view.nativeViewProtected) {
+                cell.contentView.addSubview(view.nativeViewProtected);
+                owner._addView(view);
+            }
+            let cellView: View = cell.view;
+            View.layoutChild(owner, cellView, 0, 0, owner.tableView.frame.size.width, 44);
+        }
+        else {
+            cell = TableViewCellImpl.initWithEmptyBackground();
         }
         return cell;
     }
 
+}
+
+export class TableViewCellImpl extends UITableViewCell {
+    public static initWithEmptyBackground(): TableViewCellImpl {
+        const cell = <TableViewCellImpl>TableViewCellImpl.new();
+        cell.backgroundColor = null;
+        return cell;
+    }
+
+    initWithStyleReuseIdentifier(style: UITableViewCellStyle, reuseIdentifier: string): this {
+        const cell = <this>super.initWithStyleReuseIdentifier(style, reuseIdentifier);
+        cell.backgroundColor = null;
+        return cell;
+    }
+
+    public willMoveToSuperview(newSuperview: UIView): void {
+        let parent = <any>(this.view ? this.view.parent : null);
+        if (parent && !newSuperview) {
+            parent._removeContainer(this);
+        }
+    }
+
+    public get view() {
+        return this.owner ? this.owner.get() : null
+    }
+
+    public owner: WeakRef<any>;
 }

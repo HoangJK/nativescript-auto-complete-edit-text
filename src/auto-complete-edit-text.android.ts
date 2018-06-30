@@ -185,7 +185,10 @@ function ensureMentionAdapterClass() {
             }
 
             let args: any = {
-                eventName: "itemLoading", object: this.owner, index: index, view: view,
+                eventName: "itemLoading",
+                object: this.owner,
+                index: index,
+                view: view,
                 android: parent,
                 ios: undefined
             };
