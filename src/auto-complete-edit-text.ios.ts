@@ -23,7 +23,7 @@ export class AutoCompleteEditText extends Common {
     public tableView: UITableView;
     public popoverView: Popover;
     public currentReplaceTextLocation: number;
-    public currentReplaceText: string;
+    public currentMentionRange: { start: number, end: number };
     public isMentionEditing: boolean = false;
     public hkTextViewDelegate: HKWTextViewDelegateImpl;
     public tableViewDelegate: TableViewDelegateImpl;
@@ -117,6 +117,7 @@ export class AutoCompleteEditText extends Common {
                     object: this.nativeView,
                     text: this.text.slice(wordRange.location + 1, wordRange.location + wordRange.length)
                 };
+                this.currentMentionRange = { start: wordRange.location + 1, end: wordRange.location + wordRange.length };
                 this.notify(args);
                 return;
             }
@@ -243,7 +244,6 @@ export class HKWTextViewDelegateImpl extends NSObject implements HKWTextViewDele
 
     public textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, replacementString: string): boolean {
         this.owner.get().currentReplaceTextLocation = range.location - range.length;
-        this.owner.get().currentReplaceText = replacementString;
         return this._originalDelegate.textViewShouldChangeTextInRangeReplacementText(textView, range, replacementString);
     }
 
@@ -264,6 +264,19 @@ export class TableViewDelegateImpl extends NSObject implements UITableViewDelega
     public tableViewDidSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath) {
         let owner = this._owner.get();
         owner.dismissPopover();
+        console.log("currentMentionRange: ", owner.currentMentionRange);
+        console.log("tableViewDidSelectRowAtIndexPath - indexPath: ", indexPath.row);
+        let index = indexPath.row;
+        if (owner && owner.items && index < owner.items.length) {
+            let getItem = (<any>owner.items).getItem;
+            let item = getItem ? getItem.call(owner.items, index) : owner.items[index];
+            let keyword = owner.mentionKeyword ? owner.mentionKeyword : "mention";
+            if (!item[keyword]) {
+                throw ("Property 'mentionKeyword' is empty!");
+            }
+            owner.text = replaceRange(owner.text, owner.currentMentionRange.start, owner.currentMentionRange.end, item[keyword] + " ");
+            owner.detectTag();
+        }
     }
 }
 
@@ -356,3 +369,6 @@ export class TableViewCellImpl extends UITableViewCell {
     public owner: WeakRef<any>;
 }
 
+function replaceRange(s, start, end, substitute) {
+    return s.substring(0, start) + substitute + s.substring(end);
+}
