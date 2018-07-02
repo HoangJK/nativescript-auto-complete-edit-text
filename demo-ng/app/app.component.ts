@@ -82,8 +82,4 @@ export class AppComponent {
         ]);
     }
 
-    btnDebug(event) {
-        console.log(event);
-    }
-
 }

@@ -14,6 +14,9 @@ import { ProxyViewContainer } from "tns-core-modules/ui/proxy-view-container";
 import { View, Property, KeyedTemplate, Template } from "tns-core-modules/ui/core/view";
 import { layout } from "tns-core-modules/utils/utils";
 import { Observable } from "tns-core-modules/data/observable";
+import { topmost } from 'tns-core-modules/ui/frame';
+import { screen, device } from 'tns-core-modules/platform';
+import { ios } from 'tns-core-modules/ui/utils';
 
 export class AutoCompleteEditText extends Common {
     nativeViewProtected: HKWTextView;
@@ -310,11 +313,13 @@ export class TableViewDataSourceImpl extends NSObject implements UITableViewData
             owner._prepareItem(view, indexPath.row);
             owner.map.set(cell, view);
             if (view && !view.parent && view.nativeViewProtected) {
+                if (view instanceof View) {
+                    topmost()._addView(view);
+                }
                 cell.contentView.addSubview(view.nativeViewProtected);
-                owner._addView(view);
+                ios._layoutRootView(view, CGRectMake(0, 0, owner.tableView.frame.size.width, 44));
+                cell.contentView.frame.size = view.nativeView.bounds.size;
             }
-            let cellView: View = cell.view;
-            View.layoutChild(owner, cellView, 0, 0, owner.tableView.frame.size.width, 44);
         }
         else {
             cell = TableViewCellImpl.initWithEmptyBackground();
@@ -350,3 +355,4 @@ export class TableViewCellImpl extends UITableViewCell {
 
     public owner: WeakRef<any>;
 }
+
