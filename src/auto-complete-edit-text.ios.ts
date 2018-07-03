@@ -173,6 +173,7 @@ export class AutoCompleteEditText extends Common {
             }
         }
         else {
+            this.tableView.frame = CGRectMake(0, 0, this.nativeView.frame.size.width, this.rowHeight * this.items.length);
             this.tableView.reloadData();
         }
     }
