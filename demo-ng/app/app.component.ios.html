@@ -2,13 +2,14 @@
     <StackLayout backgroundColor="#ccc">
         <Label [text]="contentMessage" textWrap="true"></Label>
         <AutoCompleteEditText mentionKeyword="username" [items]="mentionItems" class="comment-input" [(ngModel)]="contentMessage"
-            (mentionTextChanged)="onMentionTextChanged($event)" editable="true">
+            (mentionTextChanged)="onMentionTextChanged($event)" editable="true" rowHeight="50" separatorColor="transparent">
             <ng-template let-item="item">
-                <GridLayout class="list-group-item">
-                    <StackLayout orientation="horizontal" verticalAlignment="center">
+                <GridLayout class="list-group-item" rows="*, auto">
+                    <StackLayout row="0" orientation="horizontal" verticalAlignment="center">
                         <Image src="https://www.thefamouspeople.com/profiles/images/zhao-liying-1.jpg" width="50" height="50"></Image>
                         <Label marginLeft="10" [text]="item.displayName"></Label>
                     </StackLayout>
+                    <StackLayout row="1" height="0.5" backgroundColor="#cccccc"></StackLayout>
                 </GridLayout>
             </ng-template>
         </AutoCompleteEditText>

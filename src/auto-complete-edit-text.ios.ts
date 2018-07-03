@@ -5,7 +5,8 @@ import {
     mentionColorProperty,
     mentionColorCssProperty,
     itemsProperty,
-    itemTemplatesProperty
+    itemTemplatesProperty,
+    separatorColorProperty
 } from "./auto-complete-edit-text.common";
 import { Color } from "tns-core-modules/color";
 import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
@@ -163,12 +164,13 @@ export class AutoCompleteEditText extends Common {
 
     initTableView() {
         if (!this.tableView) {
-            this.tableView = new UITableView({ frame: CGRectMake(0, 0, this.nativeView.frame.size.width, 135), style: UITableViewStyle.Plain });
-            this.tableView.estimatedRowHeight = 44;
-            this.tableView.rowHeight = UITableViewAutomaticDimension;
+            this.tableView = new UITableView({ frame: CGRectMake(0, 0, this.nativeView.frame.size.width, this.rowHeight * this.items.length), style: UITableViewStyle.Plain });
             this.tableView.delegate = this.tableViewDelegate = TableViewDelegateImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
             this.tableView.dataSource = this.tableViewDataSource = TableViewDataSourceImpl.initWithOwner(new WeakRef<AutoCompleteEditText>(this));
             this.tableView.clipsToBounds = true;
+            if (this.separatorColor) {
+                this.tableView.separatorColor = this.separatorColor.ios;
+            }
         }
         else {
             this.tableView.reloadData();
@@ -204,6 +206,18 @@ export class AutoCompleteEditText extends Common {
             this._itemTemplatesInternal = this._itemTemplatesInternal.concat(value);
         }
         this.refresh();
+    }
+
+    [separatorColorProperty.getDefault](): UIColor {
+        if (this.tableView) {
+            return this.tableView.separatorColor;
+        }
+        return UIColor.whiteColor;
+    }
+    [separatorColorProperty.setNative](value: Color | UIColor) {
+        if (this.tableView) {
+            this.tableView.separatorColor = value instanceof Color ? value.ios : value;
+        }
     }
 }
 
@@ -278,6 +292,11 @@ export class TableViewDelegateImpl extends NSObject implements UITableViewDelega
             owner.detectTag();
         }
     }
+
+    public tableViewHeightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): number {
+        const owner = this._owner.get();
+        return owner.rowHeight;
+    }
 }
 
 @ObjCClass(UITableViewDataSource)
@@ -330,7 +349,7 @@ export class TableViewDataSourceImpl extends NSObject implements UITableViewData
                     topmost()._addView(view);
                 }
                 cell.contentView.addSubview(view.nativeViewProtected);
-                ios._layoutRootView(view, CGRectMake(0, 0, owner.tableView.frame.size.width, 44));
+                ios._layoutRootView(view, CGRectMake(0, 0, owner.tableView.frame.size.width, owner.rowHeight));
                 cell.contentView.frame.size = view.nativeView.bounds.size;
             }
         }

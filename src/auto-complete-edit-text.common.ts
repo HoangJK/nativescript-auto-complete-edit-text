@@ -1,6 +1,6 @@
 import { Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray, ChangedData } from 'tns-core-modules/data/observable-array';
-import { View, Property, KeyedTemplate, Template } from "tns-core-modules/ui/core/view";
+import { View, Property, KeyedTemplate, Template, CoercibleProperty, Length } from "tns-core-modules/ui/core/view";
 import { TextView } from "tns-core-modules/ui/text-view";
 import { Label } from "tns-core-modules/ui/label";
 import { parse, parseMultipleTemplates } from "tns-core-modules/ui/builder";
@@ -15,6 +15,8 @@ export module knownTemplates {
 export module knownMultiTemplates {
     export const itemTemplates = "itemTemplates";
 };
+
+const autoEffectiveRowHeight = -1;
 
 export class Common extends TextView {
     public static mentionTextChangedEvent = "mentionTextChanged";
@@ -37,9 +39,17 @@ export class Common extends TextView {
     public mentionKeyword: string;
     public hashtagColor: Color;
     public mentionColor: Color;
+    public rowHeight: number = 44;
 
     public refresh() {
         //
+    }
+
+    get separatorColor(): Color {
+        return this.style.separatorColor;
+    }
+    set separatorColor(value: Color) {
+        this.style.separatorColor = value;
     }
 
     get itemTemplateSelector(): string | ((item: any, index: number, items: any) => string) {
@@ -111,6 +121,10 @@ export class Common extends TextView {
         this.refresh();
     }
 
+    public _onRowHeightPropertyChanged() {
+        this.refresh();
+    }
+
 };
 
 export const hashtagColorProperty = new Property<Common, Color>({
@@ -177,3 +191,19 @@ export const mentionKeywordProperty = new Property<Common, string>({
     name: "mentionKeyword", valueConverter: (value) => value
 });
 mentionKeywordProperty.register(Common);
+
+
+export const rowHeightProperty = new CoercibleProperty<Common, number>({
+    name: "rowHeight", defaultValue: 44,
+    coerceValue: (target, value) => {
+        return target.nativeViewProtected ? value : 44;
+    },
+    valueChanged: (target, oldValue, newValue) => {
+        target.rowHeight = newValue;
+        target._onRowHeightPropertyChanged();
+    }
+});
+rowHeightProperty.register(Common);
+
+export const separatorColorProperty = new CssProperty<Style, Color>({ name: "separatorColor", cssName: "separator-color", equalityComparer: Color.equals, valueConverter: (v) => new Color(v) });
+separatorColorProperty.register(Style);

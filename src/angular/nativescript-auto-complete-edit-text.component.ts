@@ -84,7 +84,6 @@ export class AutoCompleteEditTextComponent implements DoCheck, OnDestroy, AfterC
     }
 
     ngAfterContentInit(): void {
-        console.log("------ngAfterContentInit");
         this.setItemTemplates();
     }
     ngOnDestroy(): void {
